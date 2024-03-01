@@ -1,5 +1,7 @@
 use leptos::*;
+mod components;
+use components::App;
 
 fn main() {
-    mount_to_body(|| view! { <p>"Hello, world!"</p> })
+    leptos::mount_to_body(|| view! { <App/> })
 }
