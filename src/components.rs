@@ -50,6 +50,20 @@ pub fn App() -> impl IntoView {
                             <div class:column=true class=("is-4", true)>{map_user.maps_opened}/{map_user.maps_held}</div>
                         </div>
                     </For>
+                    <button
+                        class:button=true
+                        class=("is-primary", true)
+                        on:click=move |_| {
+                            set_users.update(|users| users.push(MapUser {
+                                id: i32::try_from(users.len()).unwrap(),
+                                name: String::from("New Player"),
+                                maps_opened: 0,
+                                maps_held: 0
+                            }));
+                        }
+                    >
+                        Add Player
+                    </button>
                 </div>
                 <div class:column=true class=("is-6", true)>
                     <div class:columns=true>
