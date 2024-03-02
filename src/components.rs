@@ -21,18 +21,10 @@ pub fn MapUserView() -> impl IntoView {}
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (users, set_users) = create_signal(vec![MapUser {
-        id: 0,
-        name: String::from("New User"),
-        maps_opened: 0,
-        maps_held: 0,
-    }]);
-    let (portals, set_portals) = create_signal(vec![MapPortal {
-        id: 0,
-        name: String::from("New Portal"),
-        opened_by: String::from("Unknown"),
-        floors: 0,
-    }]);
+    let empty_users: Vec<MapUser> = Vec::new();
+    let empty_portals: Vec<MapPortal> = Vec::new();
+    let (users, set_users) = create_signal(empty_users);
+    let (portals, set_portals) = create_signal(empty_portals);
 
     view! {
         <div class:container=true>
@@ -64,7 +56,20 @@ pub fn App() -> impl IntoView {
                                             ></button>
                                         </div>
                                         <div class=("level-item", true)>
-                                            {map_user.name.clone()}
+                                            <input
+                                                class:input=true
+                                                prop:type="text"
+                                                prop:value=&map_user.name
+                                                on:change=move |ev| {
+                                                    set_users.update(|users| {
+                                                        for u in users.iter_mut() {
+                                                            if u.id == map_user.id {
+                                                                u.name = event_target_value(&ev)
+                                                            }
+                                                        }
+                                                    })
+                                                }
+                                            ></input>
                                         </div>
                                     </div>
                                 </nav>
