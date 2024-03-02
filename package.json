@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "rustup toolchain install nightly && cargo install trunk && trunk build --release"
+  },
   "dependencies": {
     "bulma": "^0.9.4"
   }
