@@ -32,8 +32,9 @@ pub fn App() -> impl IntoView {
                 <div class:column=true class=("is-6", true)>
                     <div class:columns=true>
                         <div class:column=true class=("is-6", true)><strong>Player</strong></div>
-                        <div class:column=true class=("is-3", true)><strong>Maps</strong></div>
-                        <div class:column=true class=("is-3", true)><strong>Actions</strong></div>
+                        <div class:column=true class=("is-2", true)><strong>Opened</strong></div>
+                        <div class:column=true class=("is-2", true)><strong>Held</strong></div>
+                        <div class:column=true class=("is-2", true)><strong>Actions</strong></div>
                     </div>
                     <For
                         each=users
@@ -74,8 +75,45 @@ pub fn App() -> impl IntoView {
                                     </div>
                                 </nav>
                             </div>
-                            <div class:column=true class=("is-3", true)>{map_user.maps_opened}/{map_user.maps_held}</div>
-                            <div class:column=true class=("is-3", true)>
+                            <div class:column=true class=("is-2", true)>
+                                <input class:input=true
+                                    prop:type="number"
+                                    prop:size="4"
+                                    prop:value=&map_user.maps_opened.to_string()
+                                    on:change=move |ev| {
+                                        set_users.update(|users| {
+                                            for u in users.iter_mut() {
+                                                if u.id == map_user.id {
+                                                    u.maps_opened = match event_target_value(&ev).parse::<i32>() {
+                                                        Ok(n) => n,
+                                                        Err(_e) => u.maps_opened
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                            <div class:column=true class=("is-2", true)>
+                                <input class:input=true
+                                    prop:type="number"
+                                    prop:size="4"
+                                    prop:value=&map_user.maps_held.to_string()
+                                    on:change=move |ev| {
+                                        set_users.update(|users| {
+                                            for u in users.iter_mut() {
+                                                if u.id == map_user.id {
+                                                    u.maps_held = match event_target_value(&ev).parse::<i32>() {
+                                                        Ok(n) => n,
+                                                        Err(_e) => u.maps_held
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }
+                                ></input>
+                            </div>
+                            <div class:column=true class=("is-2", true)>
                                 <button
                                     class:button=true
                                     class=("is-small", true)
@@ -110,11 +148,10 @@ pub fn App() -> impl IntoView {
                     </button>
                 </div>
                 <div class:column=true class=("is-6", true)>
-                    <div class:columns=true>
-                        <div class:column=true class=("is-3", true)><strong>Portal</strong></div>
-                        <div class:column=true class=("is-3", true)><strong>Opened By</strong></div>
-                        <div class:column=true class=("is-3", true)><strong>Floors</strong></div>
-                        <div class:column=true class=("is-3", true)><strong>Actions</strong></div>
+                    <div class:columns=true class=("is-vcentered", true)>
+                        <div class:column=true class=("is-5", true)><strong>Portal</strong></div>
+                        <div class:column=true class=("is-5", true)><strong>Opened By</strong></div>
+                        <div class:column=true class=("is-2", true)><strong>Floors</strong></div>
                     </div>
                     <For
                         each=portals
@@ -122,28 +159,59 @@ pub fn App() -> impl IntoView {
                         let:portal
                     >
                         <div class:columns=true>
-                            <div class:column=true class=("is-3", true)>
-                            <nav class:level=true>
-                            <div class=("level-left", true)>
-                                <div class=("level-item", true)>
-                                    <button
-                                        class:delete=true
-                                        class=("is-small", true)
-                                        on:click=move |_| {
-                                            set_portals.update(|portals| {
-                                                portals.retain(|p| p.id != portal.id)
-                                            })
-                                        }
-                                    ></button>
+                            <div class:column=true class=("is-5", true)>
+                                <nav class:level=true>
+                                <div class=("level-left", true)>
+                                    <div class=("level-item", true)>
+                                        <button
+                                            class:delete=true
+                                            class=("is-small", true)
+                                            on:click=move |_| {
+                                                set_portals.update(|portals| {
+                                                    portals.retain(|p| p.id != portal.id)
+                                                })
+                                            }
+                                        ></button>
+                                    </div>
+                                    <div class=("level-item", true)>
+                                        <input
+                                            class:input=true
+                                            prop:type="text"
+                                            prop:value=&portal.name
+                                            on:change=move |ev| {
+                                                set_portals.update(|portals| {
+                                                    for u in portals.iter_mut() {
+                                                        if u.id == portal.id {
+                                                            u.name = event_target_value(&ev)
+                                                        }
+                                                    }
+                                                })
+                                            }
+                                        ></input>
+                                    </div>
                                 </div>
-                                <div class=("level-item", true)>
-                                    {portal.name.clone()}
-                                </div>
+                            </nav>
                             </div>
-                        </nav>
+                            <div class:column=true class=("is-5", true)>{portal.opened_by}</div>
+                            <div class:column=true class=("is-2", true)>
+                                <input class:input=true
+                                    prop:type="number"
+                                    prop:size="4"
+                                    prop:value=&portal.floors.to_string()
+                                    on:change=move |ev| {
+                                        set_portals.update(|portals| {
+                                            for p in portals.iter_mut() {
+                                                if p.id == portal.id {
+                                                    p.floors = match event_target_value(&ev).parse::<i32>() {
+                                                        Ok(n) => n,
+                                                        Err(_e) => p.floors
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }
+                                ></input>
                             </div>
-                            <div class:column=true class=("is-3", true)>{portal.opened_by}</div>
-                            <div class:column=true class=("is-3", true)>{portal.floors}</div>
                             <div class:column=true class=("is-3", true)>
                             </div>
                         </div>
