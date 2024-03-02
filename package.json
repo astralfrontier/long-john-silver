@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "start": "rustup toolchain install nightly && cargo install trunk && trunk build --release",
     "build": "rustup toolchain install nightly && cargo install trunk && trunk build --release"
   },
   "dependencies": {
